@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <br>
+
+    {% if request.user.is_authenticated %}
+
+    <h1>Welcome {{ request.user.username }}</h1>
+
+    <p>You are logged in.</p>
+
+    <br>
+
+    <a href="{% url 'post_list' %}">
+        <button type="button">View Blog Posts</button>
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'create_post' %}">
+        <button type="button">Create Post</button>
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'logout' %}">
+        <button type="button">Logout</button>
+    </a>
+
+{% else %}
+
+    <h1>Welcome Guest</h1>
+
+    <p>Please login or register.</p>
+
+    <br>
+
+    <a href="{% url 'register' %}">
+        <button type="button">Register</button>
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'login' %}">
+        <button type="button">Login</button>
+    </a>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
