@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password,check_password
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 def home(request):
     print(request.user)
@@ -20,6 +21,18 @@ def register(request):
         password = request.POST.get("password")
 
         hashed_password = make_password(password)
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            return redirect({
+                "error": "Enter a valid email address"
+            }, status=400)
+
+        if User.objects.filter(email=email).exists():
+            return redirect({
+                "error": "Email already registered"
+            }, status=400)
 
         user = User.objects.create(
             username=username,
