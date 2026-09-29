@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password,check_password
 
 
 def home(request):
@@ -18,10 +19,12 @@ def register(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        user = User.objects.create_user(
+        hashed_password = make_password(password)
+
+        user = User.objects.create(
             username=username,
             email=email,
-            password=password
+            password= hashed_password
         )
 
         return redirect("login")
@@ -35,17 +38,18 @@ def login_user(request):
 
         username = request.POST.get("username")
         password = request.POST.get("password")
+        
 
         user = authenticate(
             username=username,
             password=password
         )
+        
 
         if user is not None:
-
-            login(request, user)
-
-            return redirect("home")
+            if check_password(password,user.password):
+                login(request, user)
+                return redirect("home")          
 
         return render(
             request,

@@ -28,6 +28,7 @@ def create_post(request):
     return render(request, "create_post.html")
 
 
+@login_required
 def post_list(request):
 
     posts = Post.objects.all()
